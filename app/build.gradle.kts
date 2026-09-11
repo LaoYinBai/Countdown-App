@@ -1,8 +1,20 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
 }
+
+// 发布签名从仓库根目录的 keystore.properties 读取；该文件与 keystore 均不入库。
+// 文件缺失时构建照常进行，release 产物保持未签名（不阻断调试与 CI）。
+val releaseKeystoreFile = rootProject.file("keystore.properties")
+val releaseKeystore = Properties().apply {
+    if (releaseKeystoreFile.exists()) {
+        releaseKeystoreFile.inputStream().use { load(it) }
+    }
+}
+val hasReleaseSigning = releaseKeystore.getProperty("storeFile")?.isNotBlank() == true
 
 android {
     namespace = "com.countdownapp"
@@ -12,12 +24,23 @@ android {
         applicationId = "com.countdownapp"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseKeystore.getProperty("storeFile"))
+                storePassword = releaseKeystore.getProperty("storePassword")
+                keyAlias = releaseKeystore.getProperty("keyAlias")
+                keyPassword = releaseKeystore.getProperty("keyPassword")
+            }
         }
     }
 
@@ -28,6 +51,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 

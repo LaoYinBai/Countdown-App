@@ -22,6 +22,7 @@ local.properties
 # Keystore (NEVER commit!)
 *.keystore
 *.jks
+keystore.properties
 
 # Git (keep .gitignore itself)
 !.gitignore
