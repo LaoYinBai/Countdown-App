@@ -74,7 +74,7 @@ fun AddEventDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("添加事件", color = Color.Black) },
+        title = { Text("添加事件", color = MaterialTheme.colorScheme.onSurface) },
         text = {
             Column {
                 OutlinedTextField(
@@ -93,13 +93,13 @@ fun AddEventDialog(
                 ) {
                     TextButton(
                         onClick = { calendarType = "solar" },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = if (calendarType == "solar") Color(0xFF6650a4) else Color.Transparent,
-                            contentColor = if (calendarType == "solar") Color.White else Color(0xFF6650a4)
-                        )
-                    ) {
-                        Text("阳历")
-                    }
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = if (calendarType == "solar") MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                                contentColor = if (calendarType == "solar") MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text("阳历")
+                        }
                     TextButton(
                         onClick = {
                             calendarType = "lunar"
@@ -115,13 +115,13 @@ fun AddEventDialog(
                                 lunarDay = currentLunar.day
                             }
                         },
-                        colors = ButtonDefaults.textButtonColors(
-                            containerColor = if (calendarType == "lunar") Color(0xFF6650a4) else Color.Transparent,
-                            contentColor = if (calendarType == "lunar") Color.White else Color(0xFF6650a4)
-                        )
-                    ) {
-                        Text("农历")
-                    }
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = if (calendarType == "lunar") MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                                contentColor = if (calendarType == "lunar") MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text("农历")
+                        }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -156,7 +156,7 @@ fun AddEventDialog(
                             checked = isRepeatYearly,
                             onCheckedChange = { isRepeatYearly = it }
                         )
-                        Text("每年重复（农历生日）", color = Color.Black)
+                        Text("每年重复（农历生日）", color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
@@ -198,7 +198,7 @@ fun AddEventDialog(
     if (showDatePicker) {
         AlertDialog(
             onDismissRequest = { showDatePicker = false },
-            title = { Text(if (calendarType == "lunar") "选择农历日期" else "选择日期", color = Color.Black) },
+            title = { Text(if (calendarType == "lunar") "选择农历日期" else "选择日期", color = MaterialTheme.colorScheme.onSurface) },
             text = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -214,7 +214,7 @@ fun AddEventDialog(
                             ),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -223,7 +223,7 @@ fun AddEventDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(checked = selectYear, onCheckedChange = { selectYear = it })
-                        Text("选择年份", color = Color.Black)
+                        Text("选择年份", color = MaterialTheme.colorScheme.onSurface)
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -238,7 +238,7 @@ fun AddEventDialog(
                                 modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(if (calendarType == "lunar") "农历年" else "年", fontSize = 12.sp, color = Color.Gray)
+                                Text(if (calendarType == "lunar") "农历年" else "年", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 WheelPicker(
                                     items = (1900..2099).toList(),
                                     selectedItem = selectedYear,
@@ -251,7 +251,7 @@ fun AddEventDialog(
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(if (calendarType == "lunar") "农历月" else "月", fontSize = 12.sp, color = Color.Gray)
+                            Text(if (calendarType == "lunar") "农历月" else "月", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             WheelPicker(
                                 items = (0..11).toList().map { it + 1 },
                                 selectedItem = selectedMonth + 1,
@@ -266,7 +266,7 @@ fun AddEventDialog(
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(if (calendarType == "lunar") "农历日" else "日", fontSize = 12.sp, color = Color.Gray)
+                            Text(if (calendarType == "lunar") "农历日" else "日", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             WheelPicker(
                                 items = if (calendarType == "lunar") (1..30).toList() else (1..31).toList(),
                                 selectedItem = selectedDay,
