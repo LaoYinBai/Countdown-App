@@ -1,6 +1,7 @@
 package com.countdownapp.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -16,7 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +26,9 @@ import com.countdownapp.data.entity.Event
 import com.countdownapp.ui.components.AddEventDialog
 import com.countdownapp.ui.components.EventCard
 import com.countdownapp.ui.components.SwipeToDeleteContainer
+import com.countdownapp.ui.theme.MoDiBorder
+import com.countdownapp.ui.theme.MoDiColors
+import com.countdownapp.ui.theme.MoDiRadius
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,14 +87,15 @@ fun MainScreen(
                     title = {
                         Text(
                             text = "已选择 ${selectedEventIds.size} 项",
+                            style = MaterialTheme.typography.titleMedium,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     navigationIcon = {
                         TextButton(onClick = onExitEditMode) {
-                            Text("取消", color = Color.White)
+                            Text("取消")
                         }
                     },
                     actions = {
@@ -101,12 +105,12 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = "删除",
-                                color = if (selectedEventIds.isNotEmpty()) Color(0xFFFF3B30) else Color.Gray
+                                color = if (selectedEventIds.isNotEmpty()) MoDiColors.Cinnabar else MoDiColors.TextMuted
                             )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF6650a4)
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
             } else {
@@ -115,9 +119,10 @@ fun MainScreen(
                     title = {
                         Text(
                             text = "倒数日",
+                            style = MaterialTheme.typography.displayLarge,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     },
                     actions = {
@@ -125,11 +130,11 @@ fun MainScreen(
                             closeOpenSwipe()
                             onEnterEditMode()
                         }) {
-                            Text("编辑", color = Color.White)
+                            Text("编辑")
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color(0xFF6650a4)
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
                     )
                 )
             }
@@ -138,12 +143,12 @@ fun MainScreen(
             if (!isEditMode) {
                 FloatingActionButton(
                     onClick = { showAddDialog = true },
-                    containerColor = Color(0xFF6650a4)
+                    containerColor = MoDiColors.InkOrange
                 ) {
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "添加事件",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -151,8 +156,8 @@ fun MainScreen(
         bottomBar = {
             if (isEditMode) {
                 BottomAppBar(
-                    containerColor = Color.White,
-                    contentColor = Color(0xFF6650a4)
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 ) {
                     Box(
                         modifier = Modifier
@@ -182,7 +187,7 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFFF5F5F5))
+                .background(MaterialTheme.colorScheme.background)
                 .pointerInput(isEditMode, openedEventId) {
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)
@@ -205,8 +210,9 @@ fun MainScreen(
                 ) {
                     Text(
                         text = "还没有倒数日事件",
+                        style = MaterialTheme.typography.titleMedium,
                         fontSize = 18.sp,
-                        color = Color.Gray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
@@ -301,7 +307,7 @@ fun MainScreen(
                         onDeleteSelected()
                     }
                 ) {
-                    Text("删除", color = Color(0xFFFF3B30))
+                    Text("删除", color = MoDiColors.Cinnabar)
                 }
             },
             dismissButton = {
@@ -330,9 +336,10 @@ fun EditModeEventCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(MoDiRadius.Card),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(MoDiBorder.Width, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
@@ -363,16 +370,17 @@ fun EditModeEventCard(
                     }
                     Text(
                         text = event.name,
+                        style = MaterialTheme.typography.titleMedium,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = description,
                     fontSize = 14.sp,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

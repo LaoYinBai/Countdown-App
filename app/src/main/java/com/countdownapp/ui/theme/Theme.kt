@@ -8,10 +8,12 @@ import androidx.compose.ui.graphics.Color
 /**
  * 倒数日主题：墨堤 / MoDi Connect 设计语言实例化。
  *
- * 与墨堤 Android 官方端 `Theme.kt` 的 16 个槽位映射对齐，并**补齐墨堤主题里
- * 「被组件使用却从未定义」的槽位**——墨堤侧这些槽位实际落在 M3 基线调色板上
- * （例如底栏指示器与 OutlinedButton 描边色），属于既有缺陷；本项目显式定义，
- * 避免基线色渗入：
+ * 与墨堤 Android 官方端 `Theme.kt` 的 16 个槽位映射对齐，并**补齐自身的完整槽位集**。
+ *
+ * 说明：墨堤主题未覆写的槽位（如 `outline` / `primaryContainer` / `errorContainer`）
+ * 会继承 M3 基线调色板，这属于**已知视觉债 / 默认槽位继承**，在缺少设计意图证据的
+ * 情况下不作缺陷定性，也不据此改动墨堤。倒数日本次按自己的需要把槽位显式声明完整，
+ * 使组件取色全部落在墨堤令牌上：
  *   - `outline` / `outlineVariant` → 墨线 [MoDiColors.PaperBorder]，决定 OutlinedButton 描边色
  *   - `primaryContainer` / `onPrimaryContainer` → 选中态底色 + 主文字色
  *   - `errorContainer` / `onErrorContainer` → 朱砂实底 + 白字

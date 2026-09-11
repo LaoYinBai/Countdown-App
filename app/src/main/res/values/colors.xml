@@ -8,4 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ic_launcher_background">#FFFFFFFF</color>
+
+    <!-- 墨堤「宣纸 · 昼堤」，与 ui/theme/MoDiColors.kt 保持同值 -->
+    <color name="paper_day">#FFF4F1E7</color>
+    <color name="paper_card">#FFFCFAF2</color>
 </resources>

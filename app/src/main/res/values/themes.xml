@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.CountdownApp" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/paper_card</item>
+        <!-- 状态栏底色变浅后必须改用深色图标，否则白图标在宣纸底上不可见 -->
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

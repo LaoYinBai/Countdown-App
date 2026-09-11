@@ -1,5 +1,6 @@
 package com.countdownapp.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -18,6 +18,9 @@ import com.countdownapp.util.calculateEventDays
 import com.countdownapp.util.formatLunarDate
 import com.countdownapp.util.generateEventColor
 import com.countdownapp.util.getDaysDescription
+import com.countdownapp.ui.theme.MoDiBorder
+import com.countdownapp.ui.theme.MoDiColors
+import com.countdownapp.ui.theme.MoDiRadius
 
 @Composable
 fun EventCard(
@@ -50,7 +53,8 @@ fun EventCard(
         val date = java.util.Date(event.targetDate)
         java.text.SimpleDateFormat("yyyy年MM月dd日", java.util.Locale.getDefault()).format(date)
     }
-    val daysColor = if (days < 0) Color(0xFFFF5252) else Color(0xFF4CAF50)
+    // 语义色：朱砂=已过去，成功绿=未到来（语义与重构前一致，仅取墨堤令牌色值）
+    val daysColor = if (days < 0) MoDiColors.Cinnabar else MoDiColors.Success
     val cardModifier = if (isSwipedOpen) {
         modifier
     } else {
@@ -62,9 +66,10 @@ fun EventCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .height(if (isTall) 160.dp else 80.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(MoDiRadius.Card),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        border = BorderStroke(MoDiBorder.Width, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Row(
             modifier = Modifier
@@ -95,9 +100,10 @@ fun EventCard(
                     ) {
                         Text(
                             text = "📌 ${event.name}",
+                            style = MaterialTheme.typography.titleMedium,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -106,7 +112,7 @@ fun EventCard(
                                 text = dateText,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Medium,
-                                color = Color.DarkGray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -114,7 +120,7 @@ fun EventCard(
                             Text(
                                 text = description,
                                 fontSize = 14.sp,
-                                color = Color.Gray,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -129,6 +135,7 @@ fun EventCard(
                     ) {
                         Text(
                             text = if (days < 0) (-days).toString() else days.toString(),
+                            style = MaterialTheme.typography.displaySmall,
                             fontSize = 54.sp,
                             fontWeight = FontWeight.Bold,
                             color = daysColor,
@@ -137,7 +144,7 @@ fun EventCard(
                         Text(
                             text = "天",
                             fontSize = 14.sp,
-                            color = Color.Gray
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -150,9 +157,10 @@ fun EventCard(
                 ) {
                     Text(
                         text = event.name,
+                        style = MaterialTheme.typography.titleMedium,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -160,7 +168,7 @@ fun EventCard(
                     Text(
                         text = lunarDateText?.let { "$it · $description" } ?: description,
                         fontSize = 14.sp,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

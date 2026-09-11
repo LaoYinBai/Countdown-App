@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.countdownapp.data.entity.Event
+import com.countdownapp.ui.theme.MoDiColors
 import kotlin.math.roundToInt
 
 private const val SWIPE_THRESHOLD_DP = 40
@@ -115,7 +116,7 @@ fun SwipeToDeleteContainer(
             modifier = Modifier
                 .matchParentSize()
                 .zIndex(if (dragOffset > 0f) 1f else 0f)
-                .background(Color(0xFF87CEEB).copy(alpha = leftBgAlpha)),
+                .background(MoDiColors.BridgeGreen.copy(alpha = leftBgAlpha)),
             contentAlignment = Alignment.CenterStart
         ) {
             Box(
@@ -132,6 +133,7 @@ fun SwipeToDeleteContainer(
             ) {
                 Text(
                     text = if (event.isPinned) "取消置顶" else "置顶",
+                    style = MaterialTheme.typography.labelLarge,
                     color = Color.White,
                     modifier = Modifier.padding(start = 24.dp)
                 )
@@ -145,7 +147,7 @@ fun SwipeToDeleteContainer(
             modifier = Modifier
                 .matchParentSize()
                 .zIndex(if (dragOffset < 0f) 1f else 0f)
-                .background(Color(0xFFFF3B30).copy(alpha = rightBgAlpha)),
+                .background(MoDiColors.Cinnabar.copy(alpha = rightBgAlpha)),
             contentAlignment = Alignment.CenterEnd
         ) {
             Box(
@@ -162,6 +164,7 @@ fun SwipeToDeleteContainer(
             ) {
                 Text(
                     text = "删除",
+                    style = MaterialTheme.typography.labelLarge,
                     color = Color.White,
                     modifier = Modifier.padding(end = 24.dp)
                 )
