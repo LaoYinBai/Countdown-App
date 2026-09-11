@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
@@ -80,6 +81,8 @@ fun MainScreen(
     }
 
     Scaffold(
+        // 保持透明，让根节点的墨晕底纹透出（墨堤的做法）
+        containerColor = Color.Transparent,
         topBar = {
             if (isEditMode) {
                 // Edit mode top bar
@@ -187,7 +190,6 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
                 .pointerInput(isEditMode, openedEventId) {
                     awaitEachGesture {
                         val down = awaitFirstDown(requireUnconsumed = false)

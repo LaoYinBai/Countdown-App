@@ -20,6 +20,7 @@ import com.countdownapp.data.entity.Event
 import com.countdownapp.ui.screens.EventDetailScreen
 import com.countdownapp.ui.screens.MainScreen
 import com.countdownapp.ui.theme.CountdownAppTheme
+import com.countdownapp.ui.theme.InkTraceSurface
 import com.countdownapp.ui.theme.MoDiMotion
 import com.countdownapp.ui.viewmodel.MainViewModel
 
@@ -32,7 +33,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CountdownAppContent()
+                    // 墨堤的墨晕底纹挂在根节点；下层屏幕需保持透明才能透出底纹。
+                    InkTraceSurface {
+                        CountdownAppContent()
+                    }
                 }
             }
         }

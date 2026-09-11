@@ -270,7 +270,7 @@ fun EventDetailScreen(
                                 showNameEditor = true
                             },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                         ) {
                             Text("修改名称", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                         }
@@ -280,7 +280,7 @@ fun EventDetailScreen(
                         OutlinedButton(
                             onClick = { showDatePicker = true },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                         ) {
                             Text("修改日期", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                         }
@@ -312,7 +312,7 @@ fun EventDetailScreen(
                         OutlinedButton(
                             onClick = { imagePickerLauncher.launch("image/*") },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                         ) {
                             Text(
                                 if (backgroundPath != null) "更换背景" else "设置背景",
@@ -330,7 +330,7 @@ fun EventDetailScreen(
                                     onUpdateBackground(null)
                                 },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
+                                colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
                             ) {
                                 Text("恢复默认", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                             }
