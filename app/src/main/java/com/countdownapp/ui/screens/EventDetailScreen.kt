@@ -18,7 +18,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -57,6 +59,10 @@ import com.countdownapp.util.getDaysDescription
 import com.countdownapp.util.generateEventColor
 import com.countdownapp.util.lunarFromMillis
 import com.countdownapp.util.lunarToSolarMillis
+import com.countdownapp.ui.theme.MoDiBorder
+import com.countdownapp.ui.theme.MoDiColors
+import com.countdownapp.ui.theme.MoDiMotion
+import com.countdownapp.ui.theme.MoDiRadius
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -126,6 +132,8 @@ fun EventDetailScreen(
         backgroundPath = event.backgroundImagePath
     }
 
+    // 文字色跟随用户所选背景图的亮度：这是"在任意照片上保证可读性"的对比度决策，
+    // 不属于主题样式，故保持黑/白字面值，不纳入令牌。
     LaunchedEffect(backgroundPath) {
         if (backgroundPath != null) {
             val brightness = withContext(Dispatchers.IO) {
@@ -137,7 +145,8 @@ fun EventDetailScreen(
         }
     }
 
-    val daysTextColor = if (days < 0) Color(0xFFFF5252) else Color(0xFF4CAF50)
+    // 天数语义色：朱砂=已过去，成功绿=未到来（语义与重构前一致，仅取墨堤令牌色值）
+    val daysTextColor = if (days < 0) MoDiColors.Cinnabar else MoDiColors.Success
 
     // Handle Android back button
     BackHandler(enabled = visible) {
@@ -146,13 +155,13 @@ fun EventDetailScreen(
 
     val expansionProgress by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(durationMillis = 300),
+        animationSpec = tween(durationMillis = MoDiMotion.Slow),
         label = "expansion"
     )
 
     val animatedAlpha by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(durationMillis = 300),
+        animationSpec = tween(durationMillis = MoDiMotion.Slow),
         label = "alpha"
     )
 
@@ -178,8 +187,9 @@ fun EventDetailScreen(
                     scaleY = 0.8f + 0.2f * expansionProgress
                     alpha = animatedAlpha
                 },
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+            shape = RoundedCornerShape(MoDiRadius.Card),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+            border = BorderStroke(MoDiBorder.Width, MaterialTheme.colorScheme.outlineVariant)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 if (backgroundPath != null) {
@@ -203,6 +213,7 @@ fun EventDetailScreen(
                 ) {
                     Text(
                         text = if (days < 0) "距离${event.name}已经" else "距离${event.name}还有",
+                        style = MaterialTheme.typography.titleLarge,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = textColor,
@@ -217,6 +228,7 @@ fun EventDetailScreen(
                     ) {
                         Text(
                             text = if (days < 0) (-days).toString() else days.toString(),
+                            style = MaterialTheme.typography.displaySmall,
                             fontSize = 72.sp,
                             fontWeight = FontWeight.Bold,
                             color = daysTextColor,
@@ -243,6 +255,7 @@ fun EventDetailScreen(
                                 "目标日 ${dateFormatterNoYear.format(Date(event.targetDate))}"
                             }
                         },
+                        style = MaterialTheme.typography.bodyMedium,
                         fontSize = 16.sp,
                         color = daysTextColor,
                         textAlign = TextAlign.Center
@@ -257,9 +270,9 @@ fun EventDetailScreen(
                                 showNameEditor = true
                             },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White.copy(alpha = 1f))
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                         ) {
-                            Text("修改名称", fontSize = 12.sp)
+                            Text("修改名称", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -267,9 +280,9 @@ fun EventDetailScreen(
                         OutlinedButton(
                             onClick = { showDatePicker = true },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White.copy(alpha = 1f))
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                         ) {
-                            Text("修改日期", fontSize = 12.sp)
+                            Text("修改日期", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                         }
                     }
 
@@ -299,9 +312,13 @@ fun EventDetailScreen(
                         OutlinedButton(
                             onClick = { imagePickerLauncher.launch("image/*") },
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White.copy(alpha = 1f))
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                         ) {
-                            Text(if (backgroundPath != null) "更换背景" else "设置背景", fontSize = 12.sp)
+                            Text(
+                                if (backgroundPath != null) "更换背景" else "设置背景",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontSize = 12.sp
+                            )
                         }
 
                         Spacer(modifier = Modifier.width(8.dp))
@@ -313,9 +330,9 @@ fun EventDetailScreen(
                                     onUpdateBackground(null)
                                 },
                                 modifier = Modifier.weight(1f),
-                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White.copy(alpha = 1f))
+                                colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                             ) {
-                                Text("恢复默认", fontSize = 12.sp)
+                                Text("恢复默认", style = MaterialTheme.typography.labelLarge, fontSize = 12.sp)
                             }
                         }
                     }
@@ -341,7 +358,12 @@ fun EventDetailScreen(
                         .padding(8.dp)
                         .size(40.dp)
                         .background(
-                            color = Color.Black.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.surfaceContainer,
+                            shape = CircleShape
+                        )
+                        .border(
+                            width = MoDiBorder.Width,
+                            color = MaterialTheme.colorScheme.outlineVariant,
                             shape = CircleShape
                         )
                         .clip(CircleShape)
@@ -349,7 +371,7 @@ fun EventDetailScreen(
                     Icon(
                         imageVector = Icons.Default.Download,
                         contentDescription = "保存图片",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -416,8 +438,8 @@ fun EventDetailScreen(
                                 isRepeatYearly = false
                             },
                             colors = ButtonDefaults.textButtonColors(
-                                containerColor = if (calendarType == "solar") Color(0xFF6650a4) else Color.Transparent,
-                                contentColor = if (calendarType == "solar") Color.White else Color(0xFF6650a4)
+                                containerColor = if (calendarType == "solar") MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                                contentColor = if (calendarType == "solar") MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Text("阳历")
@@ -435,8 +457,8 @@ fun EventDetailScreen(
                                 isRepeatYearly = event.isRepeatYearly
                             },
                             colors = ButtonDefaults.textButtonColors(
-                                containerColor = if (calendarType == "lunar") Color(0xFF6650a4) else Color.Transparent,
-                                contentColor = if (calendarType == "lunar") Color.White else Color(0xFF6650a4)
+                                containerColor = if (calendarType == "lunar") MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                                contentColor = if (calendarType == "lunar") MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.primary
                             )
                         ) {
                             Text("农历")
@@ -454,7 +476,7 @@ fun EventDetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -493,7 +515,7 @@ fun EventDetailScreen(
                                 modifier = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(if (calendarType == "lunar") "农历年" else "年", fontSize = 12.sp, color = Color.Gray)
+                                Text(if (calendarType == "lunar") "农历年" else "年", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 WheelPicker(
                                     items = years,
                                     selectedItem = selectedYear,
@@ -507,7 +529,7 @@ fun EventDetailScreen(
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(if (calendarType == "lunar") "农历月" else "月", fontSize = 12.sp, color = Color.Gray)
+                            Text(if (calendarType == "lunar") "农历月" else "月", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             WheelPicker(
                                 items = months.map { it + 1 },
                                 selectedItem = selectedMonth + 1,
@@ -523,7 +545,7 @@ fun EventDetailScreen(
                             modifier = Modifier.weight(1f),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(if (calendarType == "lunar") "农历日" else "日", fontSize = 12.sp, color = Color.Gray)
+                            Text(if (calendarType == "lunar") "农历日" else "日", style = MaterialTheme.typography.bodySmall, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             WheelPicker(
                                 items = dateDays,
                                 selectedItem = selectedDay,

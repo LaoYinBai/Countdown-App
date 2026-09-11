@@ -9,17 +9,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.countdownapp.data.entity.Event
 import com.countdownapp.ui.screens.EventDetailScreen
 import com.countdownapp.ui.screens.MainScreen
 import com.countdownapp.ui.theme.CountdownAppTheme
+import com.countdownapp.ui.theme.MoDiMotion
 import com.countdownapp.ui.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
             CountdownAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     CountdownAppContent()
                 }
@@ -48,7 +49,7 @@ fun CountdownAppContent(viewModel: MainViewModel = viewModel()) {
     // Animation for frosted glass overlay
     val overlayAlpha by animateFloatAsState(
         targetValue = if (selectedEvent != null) 1f else 0f,
-        animationSpec = tween(durationMillis = 300),
+        animationSpec = tween(durationMillis = MoDiMotion.Slow),
         label = "overlayAlpha"
     )
 
@@ -95,7 +96,7 @@ fun CountdownAppContent(viewModel: MainViewModel = viewModel()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.6f * overlayAlpha))
+                    .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.6f * overlayAlpha))
                     .blur(20.dp)
             )
         }
