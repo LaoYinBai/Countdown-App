@@ -4,9 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -81,6 +78,18 @@ fun MainScreen(
     }
 
     Scaffold(
+        // 滑动打开时，任何"没有被控件消费"的轻点都撤回滑动。
+        // 挂在 Scaffold 根节点上：子控件（卡片、置顶/删除按钮、顶栏按钮、FAB）在 Main 传递阶段
+        // 先拿到事件并消费，只有它们没消费的轻点才会冒泡到这里——因此语义正好是
+        //「除置顶/删除按钮区以外，任何区域轻点即撤回」。
+        // 未打开滑动时该检测器不生效，列表/卡片/滚动行为完全不受影响。
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(openedEventId, isEditMode) {
+                if (openedEventId != null && !isEditMode) {
+                    detectTapGestures { closeOpenSwipe() }
+                }
+            },
         // 保持透明，让根节点的墨晕底纹透出（墨堤的做法）
         containerColor = Color.Transparent,
         topBar = {
@@ -145,7 +154,11 @@ fun MainScreen(
         floatingActionButton = {
             if (!isEditMode) {
                 FloatingActionButton(
-                    onClick = { showAddDialog = true },
+                    onClick = {
+                        // 与顶栏「编辑」一致：先撤回滑动，再执行本按钮的动作
+                        closeOpenSwipe()
+                        showAddDialog = true
+                    },
                     containerColor = MoDiColors.InkOrange
                 ) {
                     Icon(
@@ -190,20 +203,6 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .pointerInput(isEditMode, openedEventId) {
-                    awaitEachGesture {
-                        val down = awaitFirstDown(requireUnconsumed = false)
-                        val up = waitForUpOrCancellation(PointerEventPass.Final)
-                        if (!isEditMode && openedEventId != null && up != null) {
-                            val dx = up.position.x - down.position.x
-                            val dy = up.position.y - down.position.y
-                            val touchSlop = viewConfiguration.touchSlop
-                            if (dx * dx + dy * dy <= touchSlop * touchSlop) {
-                                closeOpenSwipe()
-                            }
-                        }
-                    }
-                }
         ) {
             if (events.isEmpty()) {
                 Box(
@@ -219,22 +218,7 @@ fun MainScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .pointerInput(isEditMode, openedEventId) {
-                            awaitEachGesture {
-                                val down = awaitFirstDown(requireUnconsumed = false)
-                                val up = waitForUpOrCancellation(PointerEventPass.Final)
-                                if (!isEditMode && openedEventId != null && up != null) {
-                                    val dx = up.position.x - down.position.x
-                                    val dy = up.position.y - down.position.y
-                                    val touchSlop = viewConfiguration.touchSlop
-                                    if (dx * dx + dy * dy <= touchSlop * touchSlop) {
-                                        closeOpenSwipe()
-                                    }
-                                }
-                            }
-                        },
+                    modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
                     contentPadding = PaddingValues(vertical = 8.dp)
                 ) {
